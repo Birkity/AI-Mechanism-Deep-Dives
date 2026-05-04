@@ -1,13 +1,13 @@
 Thread (4-6 Posts)
 
-1) Ever notice an LLM judge / agent stops following the *system rubric* in long chats, even though the rubric tokens are still in the context? It’s not “memory loss” — it’s attention competition during decode.
+1) In my Sales Agent Eval Bench, I penalize “overcommitment” (hard delivery promises on weak signals). But why does the same model sometimes say “we can deploy this week” and other times downgrade to “discovery / phased plan”?
 
-2) At each new token, attention weights are a softmax over *all* prior tokens: scores come from $q_t \cdot k_i$ (plus positional effects). As the chat grows, anchors must stay highly relevant to keep winning probability mass.
+2) Mechanism: at each step, the model samples the next token from a probability distribution (softmax over logits). Under uncertainty, the top options are *close* → the distribution is flatter → small decoding changes can flip the outcome.
 
-3) Recent turns often match the current query better than old rubric text, so attention shifts locally. Some heads become strongly recency-biased (especially with long distance / positional behavior), so early rule tokens get less effective influence.
+3) Temperature reshapes the distribution. Low temperature / greedy decoding strongly exploits the top token → if “commitment” wording is slightly ahead, it tends to win consistently. Higher temperature explores more alternatives → “downgrade” tokens become more likely to appear.
 
-4) “Attention sinks” complicate this: some early tokens (like BOS / first tokens) can stay heavily attended by many heads. That can preserve a stable routing hub — but it doesn’t guarantee *your specific rule tokens* remain the ones getting attention.
+4) Top-p (nucleus) sampling chooses from the smallest set of tokens whose cumulative probability exceeds $p$. When the model is uncertain, that set gets larger — meaning more phrasing options survive, including cautious alternatives.
 
-5) KV cache + prefix caching mostly change *speed/cost*, not the math. Drift is usually about which tokens win attention at decision time (and whether truncation/summarization silently removed or rewrote the rules).
+5) Practical engineering: make judges deterministic (greedy or very low temperature), separate evidence extraction from the commitment decision (two-stage judge), and/or constrain outputs (explicit `commitment_type` field).
 
-6) Practical fix: make rules recent at the decision point. Re-inject a short rubric reminder (cheap with prefix caching), use a 2-pass judge (extract rubric items → score), and constrain outputs (JSON/checklist) to force consistent rubric use.
+6) How to verify: hold the prompt fixed and sweep `temperature` and `top_p`. If your API supports logprobs, compare logprob mass on commitment cues (“deploy”, “this week”) vs downgrade cues (“discovery”, “phase”, “handoff”).
