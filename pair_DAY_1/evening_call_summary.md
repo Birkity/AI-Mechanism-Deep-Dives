@@ -1,5 +1,6 @@
 Evening Call Summary
 
-- What landed:
-- What did not land:
-- Revisions made:
+- Status: TBD after evening call
+- What landed: TBD
+- What did not land: TBD
+- Revisions made: TBD
