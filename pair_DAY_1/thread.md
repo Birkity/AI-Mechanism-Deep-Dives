@@ -1,13 +1,31 @@
-Thread (4-6 Posts)
+Twitter Thread (6 tweets)
 
-1) In my Sales Agent Eval Bench, I penalize “overcommitment” (hard delivery promises on weak signals). But why does the same model sometimes say “we can deploy this week” and other times downgrade to “discovery / phased plan”?
+1/6 Why do LLMs sometimes sound overconfident, and other times cautious — on the *same task*?
 
-2) Mechanism: at each step, the model samples the next token from a probability distribution (softmax over logits). Under uncertainty, the top options are *close* → the distribution is flatter → small decoding changes can flip the outcome.
+It’s often not “mood” or “personality.” A lot of it is decided at inference time.
 
-3) Temperature reshapes the distribution. Low temperature / greedy decoding strongly exploits the top token → if “commitment” wording is slightly ahead, it tends to win consistently. Higher temperature explores more alternatives → “downgrade” tokens become more likely to appear.
+2/6 LLMs generate one token at a time.
+At each step, the model has a probability distribution over possible next tokens.
 
-4) Top-p (nucleus) sampling chooses from the smallest set of tokens whose cumulative probability exceeds $p$. When the model is uncertain, that set gets larger — meaning more phrasing options survive, including cautious alternatives.
+Under weak evidence, “commitment” tokens (deploy, this week, guaranteed) can be close in probability to “downgrade” tokens (discovery, phase, scope, handoff).
 
-5) Practical engineering: make judges deterministic (greedy or very low temperature), separate evidence extraction from the commitment decision (two-stage judge), and/or constrain outputs (explicit `commitment_type` field).
+3/6 Three things shape which cluster wins:
+(1) Prompt conditioning (your instructions + evidence)
+(2) Uncertainty (flat vs sharp next-token distribution)
+(3) Decoding settings (temperature, top‑p)
 
-6) How to verify: hold the prompt fixed and sweep `temperature` and `top_p`. If your API supports logprobs, compare logprob mass on commitment cues (“deploy”, “this week”) vs downgrade cues (“discovery”, “phase”, “handoff”).
+4/6 Temperature: lower temperature (or greedy decoding) exploits the top token more aggressively.
+
+So if confident wording is even slightly ahead, low temperature can make “hard commitment” phrasing happen consistently.
+
+Higher temperature explores more alternatives — which can let cautious language surface.
+
+5/6 Top‑p (nucleus sampling) keeps the smallest set of tokens whose cumulative probability exceeds p.
+
+When the model is uncertain, that set grows, meaning more alternatives survive — including cautious phrases that might otherwise get cut off.
+
+6/6 Why this matters: in my Week 11 Sales Agent Evaluation Bench, I penalize `bench_overcommitment` and reward phased discovery/handoff.
+
+If decoding changes the language, it changes your benchmark outcomes.
+
+Takeaway: for evaluators/judges, prefer deterministic decoding (or structure the decision) before trusting the scores.
