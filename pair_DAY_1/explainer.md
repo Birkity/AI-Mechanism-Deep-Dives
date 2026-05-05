@@ -27,6 +27,26 @@ An engineer can observe these effects by experiment. Use the same prompt and gen
 •	Temperature sweep: Generate with a low T (e.g. 0.1) and with a higher T (e.g. 0.7 or 1.0). You will likely see that low-T outputs consistently use the strongest, most certain language (e.g. “We can deploy by next week.”), whereas higher-T outputs may sometimes include weaker commitments (e.g. “Perhaps we should first scope the project”). If low-T generation feels like “always picking the obvious answer,” try raising T, as suggested by Ken Muse[19], which should introduce more variety (and cautious phrasing) into the output.
 •	Top-p variation: Try a tight nucleus (e.g. p=0.6) versus a very loose one (e.g. p=0.95). With a small p, the model is restricted to its very highest-probability words, often yielding the most confident phrasing. A larger p allows more tokens in play, so if caution-language tokens were just outside the cutoff, they can now appear.
 By observing how the style shifts, one can directly see that the model’s confidence language is not a fixed trait but depends on how the probability mass is allocated and sampled. For example, Huyen shows concretely that increasing T shifts probability from the top choice to rarer tokens[4]. Similarly, Ken Muse advises that if outputs are too “repetitive” (always picking the same high-probability phrasing), you should raise temperature to allow riskier choices[19]. These diagnostics make it clear: the same prompt can yield either overconfident or cautious language depending on inference settings, confirming that it’s an inference-time effect.
+
+Decoding Sweep (Week 12 grounding commit)
+
+Model: google/gemini-2.5-flash
+Prompt mode: strict vs relaxed
+Input: C:/Users/Ab/OneDrive/Desktop/10 Academy/Week 11/trp1-tenacious-bench-week11/data/tenacious_bench_v0.1/dev/dev_tasks.jsonl
+Sample size (negative velocity): 8
+
+Settings tested
+- Low: T=0.2, p=0.7
+- High: T=0.9, p=0.95
+
+Results
+- Strict prompt: no D3 flips observed.
+- Relaxed prompt: D3 failed 1/8 (12%) in both low and high settings; growth-term hits 1/8 (12%).
+- No clear temperature/top-p separation at n=8.
+
+Interpretation
+- Decoding can surface growth-frame language when prompt constraints are relaxed, consistent with the mechanism described above.
+- The signal is weak at n=8; a larger sample or a second model is needed to test for a stable decoding-parameter effect.
 Why This Generalizes
 This mechanism is ubiquitous in any LLM-driven system that uses token sampling. In a conversational agent or multi-turn dialogue, the same softmax+sampling rules apply at each turn, so the choice between safe and risky language follows identical dynamics. As conversations grow long, prompt-decay issues only compound (each turn’s output becomes part of the next prompt). Similarly, automated evaluators or reward models that penalize “overcommitment” will see models adjust phrasing if the underlying distribution changes. In short, any system relying on LLM generation will experience the tension between the most probable tokens and the exploratory tail of the distribution.
 Even models trained for safety or politeness face the same inference tradeoffs: temperature and top-p still govern whether they stick to safe scripts or stray into bolder language. The difference lies only in where the baseline logits are. Thus, the safe-vs-risky phrasing phenomenon is not a quirk of one dataset or prompt, but a direct consequence of how LLMs decode under uncertainty. As Ken Muse notes, “Every time an LLM generates text, it’s making a series of probabilistic choices”[12], whether in agents, evaluators, or long dialogues.
