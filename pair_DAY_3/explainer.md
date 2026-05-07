@@ -1,4 +1,4 @@
-# Near-Miss Rejections Teach ORPO the Boundary, Not Just the Vibe
+# Near-Miss Rejections Teach ORPO Grounded Personalization
 
 ## Question
 
@@ -19,6 +19,18 @@ The rejected response is supposed to show what the model should avoid. But the k
 That example is useful for teaching baseline hygiene, but it is too far away from the chosen response. It fails on almost every dimension at once: no prospect, no company, no trigger, no role-specific pain, no grounded offer, and no credible reason to reply.
 
 The model can learn a shortcut from that kind of pair: "avoid generic templates." That is not the same as learning how to personalize well.
+
+## What "Grounded" Means Here
+
+This was the conceptual part that needed to become clear. In SDR outreach, "grounded" does not just mean the email mentions a company name or sounds specific. It means every personalized claim is supported by the input context.
+
+A grounded email should pass three checks:
+
+1. **Entity grounding:** the person, company, role, and product category match the prompt.
+2. **Evidence grounding:** the trigger or business event came from the prompt, not from a plausible invention.
+3. **Relevance grounding:** the pain point and offer follow from that evidence instead of being generic sales logic.
+
+So the real boundary is not generic versus personalized. The real boundary is grounded personalization versus ungrounded specificity.
 
 ## Mechanism
 
@@ -85,6 +97,8 @@ This email looks much better than the total failure. It has the right person, co
 
 That makes it a better rejected sample. To prefer the chosen response, the model must learn that personalization is not just specificity. It has to be supported by the input.
 
+The near-miss is doing the teaching work because it removes the easy shortcut. The rejected email is not bad because it is generic. It is bad because it is ungrounded.
+
 ## What Each Rejection Type Teaches
 
 Total-failure rejections teach broad quality control:
@@ -106,6 +120,8 @@ Near-miss rejections teach the real personalization boundary:
 
 The best dataset uses both, but the near-misses should carry the subtle learning signal.
 
+The curation rule is simple: if the model can reject the response by noticing that it looks like a template, the pair is mostly teaching hygiene. If the model has to inspect whether the personalization is supported by the prompt, the pair is teaching grounded behavior.
+
 ## Held-Out Evaluation
 
 The evaluation should prove that the model learned the intended boundary, not just the surface pattern of "chosen emails sound better."
@@ -120,6 +136,16 @@ Use separate held-out slices:
 - Failure-type slice: report results separately for wrong entity, wrong trigger, shallow personalization, misaligned offer, and overclaiming.
 
 The most important held-out test is not "can the model beat terrible rejects?" It is "can the model reject a near-miss that sounds good but violates one grounding constraint?"
+
+A clean evaluation table should report both:
+
+| Evaluation slice | What it proves |
+| --- | --- |
+| Chosen vs total failure | The model can avoid obvious bad outreach. |
+| Chosen vs near-miss | The model can distinguish grounded from ungrounded personalization. |
+| Counterfactual fact swap | The model follows the prompt evidence when the facts change. |
+| Weak-evidence calibration | The model avoids overconfident personalization when support is thin. |
+| Failure-type slice | The team can see which grounding boundary still fails. |
 
 ## Practical Dataset Recipe
 
@@ -148,7 +174,7 @@ The semantic difference between chosen and rejected responses directly shapes wh
 
 Total-failure rejects teach the model not to write bad templates. Near-miss rejects teach the model why a response that looks good can still be wrong.
 
-For SDR outreach, near-miss rejections should improve personalization and calibration more effectively because they force the model to learn grounded specificity, not just polished sales style.
+For SDR outreach, near-miss rejections should improve personalization and calibration more effectively because they force the model to learn grounded specificity, not just polished sales style. That is the closed Day 3 insight: grounded outreach is not a vibe. It is a constraint that the training pairs and held-out eval must make visible.
 
 ## Sources
 

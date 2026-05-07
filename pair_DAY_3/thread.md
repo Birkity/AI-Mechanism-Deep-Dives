@@ -1,5 +1,7 @@
 # Thread
 
+Published thread: https://x.com/BYishak24169/status/2052377188109029511
+
 Use each numbered section as one post in the reply chain.
 
 ## Post 1/6

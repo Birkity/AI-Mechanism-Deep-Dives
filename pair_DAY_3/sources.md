@@ -30,3 +30,4 @@
 
 - Near-miss rejection design: create rejected SDR emails that are almost correct but fail one target constraint, such as unsupported trigger, wrong entity, shallow personalization, misaligned offer, or overconfident claim.
 - Contrast-set held-out evaluation: keep the email style mostly constant while changing one grounding fact, then test whether the model preference follows the fact rather than the surface pattern.
+- Grounded personalization checklist: verify entity grounding, evidence grounding, relevance grounding, and calibration before treating a personalized SDR response as high quality.

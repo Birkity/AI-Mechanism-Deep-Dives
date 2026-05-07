@@ -4,7 +4,7 @@
 
 Week 12 is turning my Week 10/11 systems from "things I shipped" into systems I can explain and defend. The pattern so far is clear: many reliability problems in LLM systems are not solved by better wording alone. They require knowing where the model is making a probabilistic generation choice, where the application needs a hard interface contract, and where an explanation may be persuasive without being causally faithful.
 
-So far, Day 1 and Day 2 closed four concrete gaps: two I named and two I researched for peers. The biggest shift in my thinking is that evaluator reliability has two separate layers: the generated form must be controlled, and the judgment behavior must be tested. A structured output can make a judge easier to parse, but it cannot prove the judge is correct. A reasoning chain can make a verdict easier to read, but it cannot prove the reasoning caused the verdict.
+So far, Day 1 through Day 3 closed six concrete gaps: three I named and three I researched for peers. The biggest shift in my thinking is that evaluator and alignment reliability have separate layers: the generated form must be controlled, the judgment behavior must be tested, and the training contrast must actually expose the boundary I want the model to learn. A structured output can make a judge easier to parse, but it cannot prove the judge is correct. A reasoning chain can make a verdict easier to read, but it cannot prove the reasoning caused the verdict. A preference pair can make a model prefer one output over another, but it cannot guarantee the model learned the intended semantic distinction if the rejected sample is too easy.
 
 ## Gaps Closed
 
@@ -20,11 +20,11 @@ So far, Day 1 and Day 2 closed four concrete gaps: two I named and two I researc
 4. **Day 2 - Peer gap I explained: prompt constraints vs schema-constrained decoding.**  
    I explained Melkam Beyene's question about why schema-defined outputs reduce invalid or unreliable outputs compared with prompt-only instructions. The core mechanism is token-level: prompts softly shift next-token probabilities, while schema-constrained decoding masks invalid continuations to zero probability and samples only from schema-valid tokens. This changes the output boundary from a writing preference into an interface contract. The important limitation is that schemas guarantee structure, not truth: they can force valid fields, enums, and JSON shape, but they do not prove the verdict or reasoning is correct.
 
-5. **Day 3 - Pending.**  
-   To be completed after the Day 3 pair work.
+5. **Day 3 - My gap: verdict signal vs explanation-pattern mimicry in SimPO-style judge training.**  
+   My Day 3 question focused on a preference-tuned classifier or judge that outputs a short verdict followed by a reason. The gap was that sequence-level preference optimization can score the whole completion, so the model may learn the explanation format around the verdict instead of the classification boundary itself. The mechanism lesson is that training pairs and held-out evals need to separate verdict correctness from rationale surface form. That means using verdict-only metrics, explanation-style perturbations, counterfactual label-boundary cases, swapped or shortened rationales, and held-out formats where the correct verdict must survive changes in the reason text.
 
-6. **Day 3 - Pending.**  
-   To be completed after the Day 3 pair work.
+6. **Day 3 - Peer gap I explained: near-miss rejections for grounded SDR personalization in ORPO.**  
+   I explained Ramlla Akmel's ORPO dataset question: if chosen SDR emails are highly personalized but rejected emails are only terrible generic templates, the model may learn anti-template behavior instead of grounded personalization. The key mechanism is that ORPO learns from the chosen/rejected contrast it is given. Total-failure rejects teach the floor, while near-miss rejects teach the boundary. A polished rejected email that invents a trigger event is more diagnostic than "Dear Sir/Madam" because it forces the model to learn that specificity only counts when it is supported by the prompt evidence. The portfolio implication is to curate near-miss rejected samples and held-out contrast sets for wrong entity, unsupported trigger, shallow personalization, misaligned offer, overclaiming, and weak-evidence calibration.
 
 7. **Day 4 - Pending.**  
    To be completed after the Day 4 pair work.
@@ -40,9 +40,11 @@ So far, Day 1 and Day 2 closed four concrete gaps: two I named and two I researc
 
 ## Most Surprising Insight
 
-The most surprising insight so far is that "looks more reasoned" and "is more reliable" are different claims. A model can produce a longer chain of thought, a cleaner JSON record, or a more confident explanation without becoming more accurate. Reliability requires matching the intervention to the failure mode: constrained decoding for structure, evaluation for correctness, and causal intervention tests for reasoning faithfulness.
+The most surprising insight so far is that "looks more reasoned," "looks more structured," and "looks more personalized" are all weaker claims than reliability. A model can produce a longer chain of thought, a cleaner JSON record, or a more specific SDR email without becoming more accurate or more grounded. Reliability requires matching the intervention to the failure mode: constrained decoding for structure, evaluation for correctness, causal intervention tests for reasoning faithfulness, and near-miss preference pairs for semantic boundaries.
 
 For my judge work, this changes how I think about training format. I should not assume that adding more intermediate reasoning steps will improve accuracy. First I need to test whether those steps are causal. If they are not, the better engineering move is to make intermediate decisions explicit, validate them separately, and force the final verdict to consume those checked fields.
+
+For my preference-data work, this changes how I think about rejected examples. I should not assume that any bad response is a useful negative. The rejected response has to fail along the dimension I want the model to learn. If I care about grounded personalization, I need rejected examples that sound plausible but are ungrounded, plus held-out evaluations that test the same boundary.
 
 ## Canonical Reading List
 
@@ -67,9 +69,24 @@ For my judge work, this changes how I think about training format. I should not 
 - Willard and Louf (2023), "Efficient Guided Generation for Large Language Models" - useful for understanding guided generation and token-level constraints through grammars/FSM-style mechanisms.  
   https://arxiv.org/abs/2307.09702
 
+- Hong et al. (2024), "ORPO: Monolithic Preference Optimization without Reference Model" - central source for understanding chosen/rejected preference optimization without a separate reference model.  
+  https://arxiv.org/abs/2403.07691
+
+- Rafailov et al. (2023), "Direct Preference Optimization: Your Language Model is Secretly a Reward Model" - background source for direct preference optimization and why pair construction matters.  
+  https://arxiv.org/abs/2305.18290
+
+- Meng, Xia, and Chen (2024), "SimPO: Simple Preference Optimization with a Reference-Free Reward" - relevant to sequence-level judge training because its average log-probability reward raises verdict-token versus explanation-token concerns.  
+  https://papers.nips.cc/paper_files/paper/2024/hash/e099c1c9699814af0be873a175361713-Abstract-Conference.html
+
+- Gardner et al. (2020), "Evaluating Models' Local Decision Boundaries via Contrast Sets" - useful for designing held-out tests where one meaningful fact changes while surface form stays similar.  
+  https://aclanthology.org/2020.findings-emnlp.117/
+
 ## Tool and Pattern List
 
 - **Reasoning intervention tests:** corrupt or swap intermediate reasoning steps, ablate the chain, reorder subtasks, and check whether verdicts move in the expected direction.
 - **Structured judge outputs:** require verdicts, rubric dimensions, confidence labels, evidence, and failure reasons as typed fields rather than free-form prose.
 - **Schema-constrained decoding demo:** compare raw next-token probabilities with a schema-valid token mask, then renormalize the remaining valid probabilities.
 - **Decoding sweeps:** vary temperature/top-p on the same prompts to detect whether style or verdict changes are inference-time effects.
+- **Near-miss rejection design:** make rejected preference samples almost correct but wrong on one grounding constraint, so the model learns the intended boundary instead of an easy artifact.
+- **Contrast-set held-out eval:** hold style constant while changing one fact, trigger, or label boundary to test whether the model follows the semantic signal.
+- **Verdict/rationale disentanglement eval:** perturb explanation format while holding labels fixed to test whether a preference-tuned judge learned the verdict signal rather than rationale surface style.
