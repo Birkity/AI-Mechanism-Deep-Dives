@@ -4,65 +4,61 @@ Use each numbered section as one post in the reply chain.
 
 ## Post 1/6
 
-Bad rejected examples can make preference tuning look better than it really is.
+Preference tuning can look successful for the wrong reason.
 
-If every rejected SDR email is obvious generic junk, ORPO may only learn:
+If every rejected SDR email is obvious generic junk, ORPO may learn:
 
-"do not write generic templates"
+"avoid bad templates"
 
-That is not the same as learning high-quality personalization.
+That is useful, but it is not the same as learning grounded personalization.
 
 ## Post 2/6
 
 ORPO learns from contrast.
 
-For each prompt, it sees a chosen response and a rejected response.
+It sees a prompt, a chosen response, and a rejected response.
 
-The training signal pushes the model to assign higher odds to the chosen response than the rejected one.
-
-So the difference between those two responses matters a lot.
+If the chosen and rejected outputs are far apart, the model can rely on easy cues: company name vs no company, specific pain vs filler, real trigger vs no trigger.
 
 ## Post 3/6
 
-If the rejected email says:
-
-"Dear Sir/Madam, we help businesses grow..."
-
-the model has an easy job.
-
-It can avoid bad templates without learning whether the chosen email was grounded in the prospect's role, company, trigger, and pain point.
-
-## Post 4/6
-
-A near-miss rejection is more useful.
+A total-failure reject teaches the floor.
 
 Example:
 
-The email has the right tone, right prospect, and right offer, but invents a trigger event that was not in the prompt.
+"Dear Sir/Madam, we help businesses grow..."
 
-Now the model must learn:
+The model can reject that without understanding whether the chosen email was actually grounded in the prospect evidence.
 
-personalization must be grounded, not just plausible.
+## Post 4/6
+
+A near-miss reject teaches the boundary.
+
+It might have the right person, company, tone, and offer, but invent the trigger event.
+
+Now the model has to learn:
+
+specificity only counts when it is supported by the input.
 
 ## Post 5/6
 
-For SDR outreach, near-miss rejects should target specific failures:
+Good near-misses fail one constraint at a time:
 
-- wrong company or role
+- wrong entity
 - unsupported trigger
 - shallow personalization
-- wrong pain point
+- misaligned offer
 - overconfident claim
 - weak evidence calibration
 
-Each pair should teach one boundary.
+That makes the preference signal sharper.
 
 ## Post 6/6
 
-The eval should match the training goal.
+The eval has to include near-misses too.
 
 Do not only test chosen vs terrible.
 
-Hold out near-miss cases where style is good but grounding is flawed.
+Hold out polished-but-flawed emails and check whether the model rejects them.
 
-That is how you check whether ORPO learned real personalization, not just anti-template behavior.
+That is how you tell whether ORPO learned personalization, not just anti-template behavior.
