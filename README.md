@@ -47,8 +47,8 @@ This repo contains my Week 12 paired knowledge-gap research artifacts: daily que
 - Day 2 thread draft: [tweet-thread.md](tweet-thread.md)
 - Day 2 blog URL: https://sprout-krill-3c0.notion.site/Prompting-Is-Not-Enforcement-How-Schema-Constrained-Decoding-Makes-LLM-Outputs-Reliable-358fb8a6541b8029bf93e4438c21c5b5?source=copy_link
 - Day 2 thread URL: https://x.com/i/status/2052077945141743904
-- Day 3 blog: (add URL)
-- Day 3 thread: (add URL)
+- Day 3 blog: https://sprout-krill-3c0.notion.site/Near-Miss-Rejections-The-Missing-Ingredient-in-ORPO-Training-for-Grounded-SDR-Outreach-359fb8a6541b8051ad07f6db2041784d?source=copy_link
+- Day 3 thread: https://x.com/BYishak24169/status/2052377188109029511
 - Day 4 blog: (add URL)
 - Day 4 thread: (add URL)
 - Day 5 blog: (add URL)
