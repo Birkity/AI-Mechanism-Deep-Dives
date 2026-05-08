@@ -8,6 +8,11 @@ What you did
 - Ran two sweeps with google/gemini-2.5-flash: first with a strict prompt (no flips), then with a relaxed prompt (one flip).
 - Grounded the Week 12 finding by updating the D3 section in the benchmark rubric.
 
+Public artifacts
+
+- Day 1 blog: [Why LLMs Sound Cautious or Overconfident](https://sprout-krill-3c0.notion.site/Why-LLMs-Sound-Cautious-or-Overconfident-What-Really-Happens-at-Inference-Time-357fb8a6541b802282b5dff12ea0460f)
+- Day 1 thread: [x.com](https://x.com/BYishak24169/status/2051647378440978776)
+
 Artifacts produced
 
 - Decoding sweep script: decoding_sweep.py
