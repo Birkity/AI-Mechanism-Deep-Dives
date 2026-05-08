@@ -26,6 +26,34 @@
   https://aclanthology.org/2020.findings-emnlp.117/  
   Canonical pattern for testing whether models learned the intended boundary by changing one meaningful detail.
 
+- Cohen (1960), "A Coefficient of Agreement for Nominal Scales"  
+  https://doi.org/10.1177/001316446002000104  
+  Foundational source for Cohen's kappa and chance-corrected agreement.
+
+- Feinstein and Cicchetti (1990), "High agreement but low kappa: I. The problems of two paradoxes"  
+  https://doi.org/10.1016/0895-4356(90)90058-L  
+  Canonical source for understanding why high raw agreement can coexist with low kappa under skewed prevalence.
+
+- Byrt, Bishop, and Carlin (1993), "Bias, prevalence and kappa"  
+  https://doi.org/10.1016/0895-4356(93)90018-V  
+  Source for prevalence-adjusted bias-adjusted kappa and prevalence/bias diagnostics.
+
+- Gwet (2008), "Computing inter-rater reliability and its variance in the presence of high agreement"  
+  https://doi.org/10.1348/000711006X126600  
+  Source for AC1, useful when high prevalence makes Cohen's kappa hard to interpret.
+
+- Kottner et al. (2011), "Guidelines for Reporting Reliability and Agreement Studies (GRRAS)"  
+  https://doi.org/10.1016/j.jclinepi.2010.03.002  
+  Reporting guidance for reliability studies, including clear protocol descriptions and rater-design distinctions.
+
+- Chow (1970), "On Optimum Recognition Error and Reject Tradeoff"  
+  https://research.ibm.com/publications/on-optimum-recognition-error-and-reject-tradeoff  
+  Classic reject-option source for thinking about abstention, coverage, and conditional error.
+
+- Geifman and El-Yaniv (2019), "SelectiveNet: A Deep Neural Network with an Integrated Reject Option"  
+  https://proceedings.mlr.press/v97/geifman19a.html  
+  Modern selective-prediction source for risk-coverage tradeoffs.
+
 ## Tools
 
 - Schema-constrained decoding / Structured Outputs  
@@ -38,3 +66,5 @@
 - Near-miss rejection design - apply to ORPO/DPO preference datasets where easy negatives create shortcut learning.
 - Contrast-set held-out evaluation - apply when the desired proof is that the model learned the semantic boundary, not surface artifacts.
 - Grounded personalization checks - apply to SDR outreach models where every personalized claim should be supported by prompt evidence.
+- Risk-coverage reporting - apply when models can abstain, refuse, or return unparseable output; always report coverage alongside answered-case accuracy.
+- Reliability reporting bundle - apply when rubric agreement is reported under skewed base rates; include raw agreement, base rates, kappa, AC1/PABAK, and contingency tables.
