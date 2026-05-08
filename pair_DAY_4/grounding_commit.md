@@ -4,6 +4,7 @@
   - Repo-visible update: [portfolio_update.md](../portfolio_update.md)
   - Day 4 explainer: [explainer.md](explainer.md)
   - Day 4 source list: [sources.md](sources.md)
+  - Day 4 reliability computation: [reliability_metrics.py](reliability_metrics.py)
   - Day 4 blog: [When 91.7% Agreement Isn't the Whole Story](https://sprout-krill-3c0.notion.site/When-91-7-Agreement-Isn-t-the-Whole-Story-35afb8a6541b8047bdacf807e4522f6d?source=copy_link)
   - Day 4 thread: [x.com](https://x.com/BYishak24169/status/2052730818569658810)
 
