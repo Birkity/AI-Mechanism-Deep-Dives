@@ -2,7 +2,7 @@
 
 ## Summary
 
-These grounding commits turn the Week 10/11 artifacts from working demos into systems with clearer mechanisms, failure modes, and evaluation plans. The common improvement is that each artifact now names the boundary it must control: instruction fidelity, inference-time confidence, structured output reliability, reasoning faithfulness, and grounded personalization.
+These grounding commits turn the Week 10/11 artifacts from working demos into systems with clearer mechanisms, failure modes, and evaluation plans. The common improvement is that each artifact now names the boundary it must control: instruction fidelity, inference-time confidence, structured output reliability, reasoning faithfulness, grounded personalization, abstention coverage, and reliability reporting under skewed base rates.
 
 ## Commit 1
 
@@ -27,10 +27,14 @@ These grounding commits turn the Week 10/11 artifacts from working demos into sy
 
 ## Commit 4
 
-- Artifact: link or file path.
-- What changed and why it is better.
+- Artifact: `pair_DAY_4/grounding_commit.md`
+- What changed and why it is better:
+  - Added coverage-aware evaluation reporting for abstentions and unparseable outputs.
+  - The Week 10/11 evaluator work is stronger because answered-case accuracy will no longer hide systematic failures on hard slices.
 
 ## Commit 5
 
-- Artifact: link or file path.
-- What changed and why it is better.
+- Artifact: `pair_DAY_4/explainer.md`
+- What changed and why it is better:
+  - Added a prevalence-aware reliability reporting pattern for raw agreement, Cohen's kappa, Gwet's AC1/PABAK, and contingency tables.
+  - The Week 11 benchmark documentation is stronger because it can distinguish intra-rater consistency from true inter-rater agreement and avoid overstating raw agreement under skewed labels.
